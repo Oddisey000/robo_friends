@@ -8,6 +8,23 @@ import ErrorBoundry from '../components/ErrorBoundry';
 import CardList from '../components/card-list/card-list.component';
 import SearchBox from '../components/search-box/search-box.component';
 
+// Import Redux actions
+import { connect } from 'react-redux';
+import { setSearchField } from '../redux/actions';
+
+// Configuring mapStateToProps and mapDespatchToProps Redux functions
+const mapStateToProps = state => {
+  return {
+    searchfield: state.searchfield
+  }
+}
+const mapDespatchToProps = (dispatch) => {
+  return {
+    // For onSearchChange now Redux is responsible and dispatch as new action
+    onSearchChange: (event) => dispatch(setSearchField(event.target.value))
+  }
+}
+
 /**
  * Declare the constructor and use state in application
  * To access React state super() need to be called
@@ -25,8 +42,7 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      robots: [],
-      searchfield: ''
+      robots: []
     };
   }
 
@@ -40,13 +56,10 @@ class App extends Component {
     });
   }
 
-  onSearchChange = (event) => {
-    this.setState({ searchfield: event.target.value });
-  }
-
   render() {
-    // Destructuring this.state
-    const { robots, searchfield } = this.state;
+    // Import objects from state and redux props
+    const { robots } = this.state;
+    const { searchfield, onSearchChange } = this.props;
     const filteredRobots = robots.filter(robot => {
       return (
         robot.name.toLowerCase()
@@ -61,7 +74,7 @@ class App extends Component {
     return (
       <div className="tc">
         <h1 className="app-logo f1">RoboFriends</h1>
-        <SearchBox searchChange={this.onSearchChange} />
+        <SearchBox searchChange={ onSearchChange } />
         <ErrorBoundry>
           <CardList robots={filteredRobots} />
         </ErrorBoundry>
@@ -70,4 +83,5 @@ class App extends Component {
   }
 }
 
-export default App;
+// Using connect Redux method to controll App's state
+export default connect(mapStateToProps, mapDespatchToProps)(App);
