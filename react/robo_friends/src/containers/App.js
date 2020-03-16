@@ -10,56 +10,32 @@ import SearchBox from '../components/search-box/search-box.component';
 
 // Import Redux actions
 import { connect } from 'react-redux';
-import { setSearchField } from '../redux/actions';
+import { setSearchField, requestRobots } from '../redux/actions';
 
 // Configuring mapStateToProps and mapDespatchToProps Redux functions
 const mapStateToProps = state => {
   return {
-    searchfield: state.searchfield
+    searchfield: state.searchRobots.searchfield,
+    robots: state.requestRobots.robots,
+    isPending: state.requestRobots.isPending,
+    error: state.requestRobots.error
   }
 }
 const mapDespatchToProps = (dispatch) => {
   return {
     // For onSearchChange now Redux is responsible and dispatch as new action
-    onSearchChange: (event) => dispatch(setSearchField(event.target.value))
+    onSearchChange: (event) => dispatch(setSearchField(event.target.value)),
+    // Handling robots request by Reducer and Reducer's action
+    onRequestRobots: () => dispatch(requestRobots())
   }
 }
 
-/**
- * Declare the constructor and use state in application
- * To access React state super() need to be called
- * Declare robots data and search field wich is empty by default
- * When component did mount - fetch data from API and fill in robots array
- * When onSearchChange is called - reset application state's searchfield
- * Using filter method to check wich array element includes searched characters in its name
- * Use lowerCase to garantie correct comparison
- * Store data inside variable and use it in App's return state
- * If no data is in robots array show loading text to user
- * Use searchChange in property to send necessary data searchBox component
- * Use array of data wich is by default the complete robots array but when user interact with it - the array could be completely changed
- */
 class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      robots: []
-    };
-  }
-
-  componentDidMount() {
-    fetch('https://jsonplaceholder.typicode.com/users')
-    .then(response => {
-      return response.json();
-    })
-    .then(users => {
-      this.setState({ robots: users });
-    });
-  }
+  componentDidMount() { this.props.onRequestRobots(); }
 
   render() {
-    // Import objects from state and redux props
-    const { robots } = this.state;
-    const { searchfield, onSearchChange } = this.props;
+    // Import objects from redux props
+    const { searchfield, onSearchChange, robots, isPending } = this.props;
     const filteredRobots = robots.filter(robot => {
       return (
         robot.name.toLowerCase()
@@ -69,7 +45,7 @@ class App extends Component {
       );
     });
 
-    if (!robots.length) return <h1 className="app-logo f1 tc">Loading</h1>
+    if (isPending) return <h1 className="app-logo f1 tc">Loading</h1>
     
     return (
       <div className="tc">

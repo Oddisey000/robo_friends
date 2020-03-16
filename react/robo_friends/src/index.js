@@ -14,14 +14,23 @@ import * as serviceWorker from './serviceWorker';
 import 'tachyons';
 
 // Import Redux to the project
+// Combine reducers with inbuild function
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware, combineReducers } from 'redux';
+// Uncomment import below if you need redux logging into console
+// import { createLogger } from 'redux-logger';
+import thunkMiddleware from 'redux-thunk';
 
 // Import reducers
-import { searchRobots } from './redux/reducers';
+import { searchRobots, requestRobots } from './redux/reducers';
 
-// Create reducer
-const store = createStore(searchRobots);
+// Creat root Redux reducer for the app
+const rootReducer = combineReducers({ searchRobots, requestRobots });
+
+// Create variables for Redux, create and apply middleware to the store
+// Uncomment logger variable and add it to applyMiddleware to se all what happens in console.log
+// const logger = createLogger();
+const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
 
 // Use Provider component to pass store to all components across the app
 ReactDOM.render(
