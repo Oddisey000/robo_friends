@@ -5,6 +5,7 @@ import './App.css';
 import ErrorBoundry from '../components/ErrorBoundry';
 
 // Import custom components
+import Header from '../components/header/header.component';
 import CardList from '../components/card-list/card-list.component';
 import SearchBox from '../components/search-box/search-box.component';
 
@@ -49,7 +50,7 @@ class App extends Component {
     
     return (
       <div className="tc">
-        <h1 className="app-logo f1">RoboFriends</h1>
+        <Header />
         <SearchBox searchChange={ onSearchChange } />
         <ErrorBoundry>
           <CardList robots={filteredRobots} />
