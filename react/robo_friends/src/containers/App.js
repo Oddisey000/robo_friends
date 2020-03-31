@@ -1,13 +1,8 @@
 import React, { Component } from 'react';
-import './App.css';
-
-// Collect possible errors
-import ErrorBoundry from '../components/ErrorBoundry';
+// import './App.css';
 
 // Import custom components
-import Header from '../components/header/header.component';
-import CardList from '../components/card-list/card-list.component';
-import SearchBox from '../components/search-box/search-box.component';
+import MainPage from '../components/main-page/main-page.component';
 
 // Import Redux actions
 import { connect } from 'react-redux';
@@ -32,31 +27,8 @@ const mapDespatchToProps = (dispatch) => {
 }
 
 class App extends Component {
-  componentDidMount() { this.props.onRequestRobots(); }
-
-  render() {
-    // Import objects from redux props
-    const { searchfield, onSearchChange, robots, isPending } = this.props;
-    const filteredRobots = robots.filter(robot => {
-      return (
-        robot.name.toLowerCase()
-        .includes(
-          searchfield.toLowerCase()
-        )
-      );
-    });
-
-    if (isPending) return <h1 className="app-logo f1 tc">Loading</h1>
-    
-    return (
-      <div className="tc">
-        <Header />
-        <SearchBox searchChange={ onSearchChange } />
-        <ErrorBoundry>
-          <CardList robots={filteredRobots} />
-        </ErrorBoundry>
-      </div>
-    );
+  render() { 
+    return <MainPage { ...this.props } />
   }
 }
 
